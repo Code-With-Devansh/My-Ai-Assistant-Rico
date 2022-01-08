@@ -123,7 +123,6 @@ class Bot:
                 path = "F:\Devansh\Songs"
                 music = os.listdir(path)
                 musicFiles = Bot.getFiles(music)
-                self.isPlaying = True
                 musicPath = os.path.join(path,musicFiles[random.randrange(len(musicFiles))])
                 self.player = vlc.MediaPlayer(musicPath)
                 self.player.play()
