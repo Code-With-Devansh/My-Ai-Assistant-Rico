@@ -77,7 +77,7 @@ class Bot:
         Bot.greet()
         while True:
             query = Bot.getInput().lower().replace("rico", '')
-            if query == 'None':
+            if query == 'none':
                  pass
             elif query == '':
                 Bot.speakGirl("Hello, I am Rico. How can I help you")
