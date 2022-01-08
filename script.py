@@ -77,11 +77,9 @@ class Bot:
         Bot.greet()
         while True:
             query = Bot.getInput().lower().replace("rico", '')
-            if "stop" in query:
-                if self.isPlaying:
-                    self.isPlaying = False
-                    self.player.stop()
-            if query == '':
+            if query == 'None':
+                 pass
+            elif query == '':
                 Bot.speakGirl("Hello, I am Rico. How can I help you")
             elif "what is" in query:
                 dict = PyDictionary()
