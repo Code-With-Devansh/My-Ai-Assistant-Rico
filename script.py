@@ -9,6 +9,9 @@ import vlc
 from PyDictionary import PyDictionary
 from mutagen.mp3 import MP3
 import time
+import requests
+import json
+import time
 class Bot:
     def greet():
         hour = datetime.datetime.now().hour
@@ -54,7 +57,9 @@ class Bot:
     def getCommandMusic():
         r = sr.Recognizer()
         with sr.Microphone() as source:
-            r.pause_threshold = 1
+            r.pause_threshold = 0.5
+            r.energy_threshold = 500
+            r.non_speaking_duration = 0.3
             audio = r.listen(source)
         try:
             query = r.recognize_google(audio, language='en-in')
@@ -73,16 +78,47 @@ class Bot:
                     break
             else: 
                 return
+    def getNews(self):
+        apiKey = 'f9da9cefd5c54983a49ed363e07d279d'
+        str = requests.get(f'https://newsapi.org/v2/top-headlines?country=in&apiKey={apiKey}')
+        str = str.text
+        self.dictstr = json.loads(str)
+    def Playnews(self):
+        results = len(self.dictstr['articles'])
+        if self.newsIndex<results:
+            Bot.speakGirl("starting the news...")
+            art = self.dictstr['articles']
+            Bot.speakGirl(art[self.newsIndex]['title'])
+            print("click to know more: ", art[self.newsIndex]['url'])
+            print()
+            Bot.speakGirl("Moving on to the next News...")
+            self.newsIndex +=1
     def __init__(self) -> None:
         Bot.greet()
+        self.newsIndex = 0
         while True:
             query = Bot.getInput().lower().replace("rico", '')
             if "stop" in query:
                 if self.isPlaying:
                     self.isPlaying = False
                     self.player.stop()
-            if query == '':
+            elif query == '':
                 Bot.speakGirl("Hello, I am Rico. How can I help you")
+            elif query =='none':
+                pass
+            elif "news" in query:
+                self.getNews()
+                while True:
+                    self.Playnews()
+                    print("If you don't want to listen more news say stop! else ignore this message.")
+                    temp =  Bot.getCommandMusic()
+                    if "stop" in temp:
+                        break
+                    elif temp == 'none':
+                        continue
+                    else:
+                        continue
+                
             elif "what is" in query:
                 dict = PyDictionary()
                 Bot.speakGirl(dict.meaning(query.replace("what is", '')))
