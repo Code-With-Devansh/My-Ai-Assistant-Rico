@@ -98,15 +98,8 @@ class Bot:
         self.newsIndex = 0
         while True:
             query = Bot.getInput().lower().replace("rico", '')
-<<<<<<< HEAD
-            if "stop" in query:
-                if self.isPlaying:
-                    self.isPlaying = False
-                    self.player.stop()
-=======
             if query == 'none':
                  pass
->>>>>>> a1dbc7522219e7aead1d2556772d58114b322a0d
             elif query == '':
                 Bot.speakGirl("Hello, I am Rico. How can I help you")
             elif query =='none':
