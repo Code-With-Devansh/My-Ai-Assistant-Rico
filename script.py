@@ -10,9 +10,11 @@ from PyDictionary import PyDictionary
 from mutagen.mp3 import MP3
 import time
 import requests
-import main
 import json
 import time
+import pytesseract
+from PIL import ImageGrab
+import pyautogui
 class Bot:
     def greet():
         hour = datetime.datetime.now().hour
@@ -26,7 +28,6 @@ class Bot:
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Listening...")
-            r.pause_threshold = 1
             audio = r.listen(source)
         try:
             print("Recognizing...")
@@ -93,6 +94,32 @@ class Bot:
             print()
             Bot.speakGirl("Moving on to the next News...")
             self.newsIndex +=1
+    def read(self, imgObj):
+        pathToTesseract = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        pytesseract.pytesseract.tesseract_cmd = pathToTesseract
+        text = pytesseract.pytesseract.image_to_string(imgObj)
+        return text
+    def readScreen(self):
+        pyautogui.hotkey('win', 'shift', 's')
+        time.sleep(0.7)
+        initcol = ImageGrab.grab()
+        initcol = initcol.getpixel((275, 747))
+        time.sleep(1)
+        while True:
+            time.sleep(0.5)
+            img = ImageGrab.grab()
+            if img.getpixel((275, 747)) != initcol:
+                break
+        time.sleep(0.5)
+        Initialimg = ImageGrab.grab().getpixel((1133, 643))
+        while True:
+            time.sleep(0.5)
+            img = ImageGrab.grab().getpixel((1133, 643))
+            if Initialimg != img:
+                break
+        time.sleep(0.5)
+        image = ImageGrab.grabclipboard()
+        Bot.speakGirl(self.read(image))
     def __init__(self) -> None:
         Bot.greet()
         self.newsIndex = 0
@@ -172,7 +199,7 @@ class Bot:
                 self.player.play()
                 self.playMusic(musicPath) 
             elif 'read this article' in query:
-                main.readScreen()
+                self.readScreen()
             elif "search on youtube" in query:
                 urL = "https://www.youtube.com/results?search_query=<search>"
                 link = urL.replace("<search>", query.replace("search on youtube", ""))
