@@ -10,6 +10,7 @@ from PyDictionary import PyDictionary
 from mutagen.mp3 import MP3
 import time
 import requests
+import main
 import json
 import time
 class Bot:
@@ -57,7 +58,6 @@ class Bot:
     def getCommandMusic():
         r = sr.Recognizer()
         with sr.Microphone() as source:
-            r.pause_threshold = 0.5
             r.energy_threshold = 500
             r.non_speaking_duration = 0.3
             audio = r.listen(source)
@@ -163,6 +163,16 @@ class Bot:
                 self.player = vlc.MediaPlayer(musicPath)
                 self.player.play()
                 self.playMusic(musicPath) 
+            elif "play song" in query:
+                path = "F:\Devansh\Songs"
+                music = os.listdir(path)
+                musicFiles = Bot.getFiles(music)
+                musicPath = os.path.join(path,musicFiles[random.randint(len(musicFiles))])
+                self.player = vlc.MediaPlayer(musicPath)
+                self.player.play()
+                self.playMusic(musicPath) 
+            elif 'read this article' in query:
+                main.readScreen()
             elif "search on youtube" in query:
                 urL = "https://www.youtube.com/results?search_query=<search>"
                 link = urL.replace("<search>", query.replace("search on youtube", ""))
